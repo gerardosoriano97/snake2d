@@ -1,6 +1,12 @@
 #Representación del estado del juego
 
 module Model
+    module Direction
+        UP = :up
+        RIGHT = :right
+        DOWN = :down
+        LEFT = :left
+    end
     class Coord < Struct.new(:row, :col)
         
     end
@@ -13,7 +19,7 @@ module Model
     class Grid < Struct.new(:rows, :cols)
         
     end
-    class State < Struct.new(:snake, :food, :grid)
+    class State < Struct.new(:snake, :food, :grid, :next_direction, :game_finished)
         
     end
 
@@ -25,6 +31,8 @@ module Model
                 ]),
             Model::Food.new(4,4),
             Model::Grid.new(8, 12),
+            Direction::DOWN,
+            false
         )
     end
 end
