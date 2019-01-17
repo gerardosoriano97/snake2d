@@ -2,8 +2,11 @@ module Actions
     def self.move_snake(state)
         next_direction = state.current_direction
         next_position = calc_next_position(state)
-        # verificar que la siguiente casilla sea valida
-        if position_is_valid?(state, next_position)
+        if position_is_food?(state, next_position)
+            state = grow_snake(state, next_position)
+            generate_food(state)
+            # verificar que la siguiente casilla sea valida
+        elsif position_is_valid?(state, next_position)
             # si es valida, se mueve la serpiente
             move_snake_to(state, next_position)
         else
@@ -71,6 +74,14 @@ module Actions
         state.game_finished = true
         state
     end
+    def self.position_is_food?(state, next_position)
+        state.food.row == next_position.row && state.food.col == next_position.col
+    end
+    def self.grow_snake(state, next_position)
+        new_positions = [next_position] + state.snake.positions
+        state.snake.positions = new_positions
+        state
+    end
     def self.next_direction_is_valid?(state, direction) 
         case state.current_direction
         when Model::Direction::UP
@@ -83,5 +94,13 @@ module Actions
             return true if direction != Model::Direction::RIGHT
         end
         return false
+    end
+    def self.generate_food(state)
+        new_food = Model::Food.new(
+            rand(state.grid.rows), 
+            rand(state.grid.cols)
+            )
+        state.food = new_food
+        state
     end
 end
