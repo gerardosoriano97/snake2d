@@ -2,8 +2,9 @@ require "ruby2d"
 require_relative "../model/state"
 module View
     class Ruby2dView
-        def initialize
+        def initialize(app)
             @pixel_size = 50
+            @app = app
         end
         def start(state)
             extend Ruby2D::DSL
@@ -11,6 +12,9 @@ module View
                 title: "Snake", 
                 width: @pixel_size * state.grid.cols, 
                 height: @pixel_size * state.grid.rows)
+            on :key_down do |event|
+                handle_key_event(event)
+            end
             show
         end
         def render(state)
@@ -42,6 +46,18 @@ module View
                     size: @pixel_size,
                     color: 'green'
                 )
+            end
+        end
+        def handle_key_event(event)
+            case event.key
+            when 'up'
+                @app.send_action(:change_direction, Model::Direction::UP)
+            when 'right'
+                @app.send_action(:change_direction, Model::Direction::RIGHT)
+            when 'down'
+                @app.send_action(:change_direction, Model::Direction::DOWN)
+            when 'left'
+                @app.send_action(:change_direction, Model::Direction::LEFT)
             end
         end
     end
